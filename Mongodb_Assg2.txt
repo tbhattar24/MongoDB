@@ -1,0 +1,135 @@
+Atlanta Population:
+****Use db.zipcodes.fimd() to filter results to only the results where city is ATLANTA and state is GA.
+db.zipcodes.find({city:"ATLANTA",state:"GA"})
+****Use db.zipcodes.aggregate with $match to do the same as above.
+db.zipcodes.aggregate([{$match:{city:"ATLANTA",state:"GA"}}])
+3.	Use $group to count the number of zip codes in Atlanta.
+db.zipcodes.aggregate([{$match:{city:"ATLANTA"}},{$group:{_id:"$city",count_field:{$sum:1}}}])
+[ { _id: 'ATLANTA', count_field: 41 } ]
+4.	Use $group to find the total population in Atlanta.
+db.zipcodes.aggregate([{$match:{city:"ATLANTA"}},{$group:{_id:"$city",total_pop:{$sum:"$pop"}}}])
+[ { _id: 'ATLANTA', total_pop: 630046 } ]
+
+*******************************************************************************************
+Populations By State:
+1.Use aggregate to calculate the total population for each state.
+db.zipcodes.aggregate([{$group:{_id:'$state',total_pop:{$sum:"$pop"}}}])
+[
+  { _id: 'VT', totalpop: 562758 },
+  { _id: 'DC', totalpop: 606900 },
+  { _id: 'AL', totalpop: 4040587 },
+  { _id: 'NC', totalpop: 6628637 },
+  { _id: 'WI', totalpop: 4891769 },
+  { _id: 'OK', totalpop: 3145585 },
+  { _id: 'AZ', totalpop: 3665228 },
+  { _id: 'NV', totalpop: 1201833 },
+  { _id: 'HI', totalpop: 1108229 },
+  { _id: 'UT', totalpop: 1722850 },
+  { _id: 'TN', totalpop: 4876457 },
+  { _id: 'DE', totalpop: 666168 },
+  { _id: 'IN', totalpop: 5544136 },
+  { _id: 'SD', totalpop: 695397 },
+  { _id: 'MT', totalpop: 798948 },
+  { _id: 'NJ', totalpop: 7730188 },
+  { _id: 'KS', totalpop: 2475285 },
+  { _id: 'WA', totalpop: 4866692 },
+  { _id: 'MO', totalpop: 5110648 },
+  { _id: 'WY', totalpop: 453528 }
+]
+2.	Sort the results by population, highest first.
+db.zipcodes.aggregate([{$group:{_id:"$state",total_pop:{$sum:"$pop"}}},{$sort:{total_pop:-1}}])
+[
+  { _id: 'CA', total_pop: 29754890 },
+  { _id: 'NY', total_pop: 17990402 },
+  { _id: 'TX', total_pop: 16984601 },
+  { _id: 'FL', total_pop: 12686644 },
+  { _id: 'PA', total_pop: 11881643 },
+  { _id: 'IL', total_pop: 11427576 },
+  { _id: 'OH', total_pop: 10846517 },
+  { _id: 'MI', total_pop: 9295297 },
+  { _id: 'NJ', total_pop: 7730188 },
+  { _id: 'NC', total_pop: 6628637 },
+  { _id: 'GA', total_pop: 6478216 },
+  { _id: 'VA', total_pop: 6181479 },
+  { _id: 'MA', total_pop: 6016425 },
+  { _id: 'IN', total_pop: 5544136 },
+  { _id: 'MO', total_pop: 5110648 },
+  { _id: 'WI', total_pop: 4891769 },
+  { _id: 'TN', total_pop: 4876457 },
+  { _id: 'WA', total_pop: 4866692 },
+  { _id: 'MD', total_pop: 4781379 },
+  { _id: 'MN', total_pop: 4372982 }
+]
+3.	Limit the result to just the first 3 results. What are the top 3 states in population?
+db.zipcodes.aggregate([{$group:{_id:"$state",total_pop:{$sum:"$pop"}}},{$sort:{total_pop:-1}},{$limit:3}])
+[
+  { _id: 'CA', total_pop: 29754890 },
+  { _id: 'NY', total_pop: 17990402 },
+  { _id: 'TX', total_pop: 16984601 }
+]
+Populations By City:
+1.	Use aggregation to calculate total population for each city.
+db.zipcodes.aggregate([{$group:{_id:"$city",total_pop:{$sum:"$pop"}}}])
+[
+  { _id: 'LARTO', total_pop: 5507 },
+  { _id: 'HORNELL', total_pop: 14311 },
+  { _id: 'CALIFORNIA', total_pop: 20914 },
+  { _id: 'WELLS BRIDGE', total_pop: 232 },
+  { _id: 'HARROD', total_pop: 4897 },
+  { _id: 'CAPUTA', total_pop: 578 },
+  { _id: 'ALDER CREEK', total_pop: 74 },
+  { _id: 'WILCOX', total_pop: 2390 },
+  { _id: 'KEELING', total_pop: 2651 },
+  { _id: 'HARRELLSVILLE', total_pop: 1046 },
+  { _id: 'WARREN', total_pop: 276817 },
+  { _id: 'RECTOR', total_pop: 3891 },
+  { _id: 'HAVILAND', total_pop: 1936 },
+  { _id: 'MAZA', total_pop: 1800 },
+  { _id: 'EROS', total_pop: 2296 },
+  { _id: 'SPRING GLEN', total_pop: 288 },
+  { _id: 'BIG CABIN', total_pop: 2634 },
+  { _id: 'SAN SIMEON', total_pop: 500 },
+  { _id: 'ANTIOCH', total_pop: 123107 },
+  { _id: 'GENTRY', total_pop: 5401 }
+]
+*******************************************************************************************
+2.Sort the results by population, highest first.
+db.zipcodes.aggregate([{$group:{_id:"$city",total_pop:{$sum:"$pop"}}},{$sort:{total_pop:-1}}])
+[
+  { _id: 'CHICAGO', total_pop: 2452177 },
+  { _id: 'BROOKLYN', total_pop: 2341387 },
+  { _id: 'HOUSTON', total_pop: 2123053 },
+  { _id: 'LOS ANGELES', total_pop: 2102295 },
+  { _id: 'PHILADELPHIA', total_pop: 1639862 },
+  { _id: 'NEW YORK', total_pop: 1476790 },
+  { _id: 'BRONX', total_pop: 1209548 },
+  { _id: 'SAN DIEGO', total_pop: 1054316 },
+  { _id: 'DALLAS', total_pop: 999042 },
+  { _id: 'DETROIT', total_pop: 967468 },
+  { _id: 'PHOENIX', total_pop: 902249 },
+  { _id: 'MIAMI', total_pop: 848436 },
+  { _id: 'COLUMBUS', total_pop: 825448 },
+  { _id: 'SAN JOSE', total_pop: 817497 },
+  { _id: 'SAN ANTONIO', total_pop: 813188 },
+  { _id: 'WASHINGTON', total_pop: 780954 },
+  { _id: 'BALTIMORE', total_pop: 738846 },
+  { _id: 'JACKSONVILLE', total_pop: 735505 },
+  { _id: 'SAN FRANCISCO', total_pop: 723993 },
+  { _id : 'CLEVELAND', total_pop: 687451 }
+]
+*****************************************************************
+3.Limit the results to just the first 3 results. What are the top 3 cities in population?
+db.zipcodes.aggregate([{$group:{_id:"$city",total_pop:{$sum:"$pop"}}},{$sort:{total_pop:-1}},{$limit:3}])
+[
+  { _id: 'CHICAGO', total_pop: 2452177 },
+  { _id: 'BROOKLYN', total_pop: 2341387 },
+  { _id: 'HOUSTON', total_pop: 2123053 }
+]
+*********************************************************************************
+4.What are the top 3 cities in population in Texas?
+db.zipcodes.aggregate([{$match:{state:"TX"}},{$group:{_id:"$city",total_pop:{$sum:"$pop"}}},{$sort:{total_pop:-1}},{$limit:3}])
+[
+  { _id: 'HOUSTON', total_pop: 2095918 },
+  { _id: 'DALLAS', total_pop: 940191 },
+  { _id: 'SAN ANTONIO', total_pop: 811792 }
+]
